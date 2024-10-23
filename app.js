@@ -1,29 +1,16 @@
 const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
-const classroomRoutes = require("./routes/classroomRoutes");
-const studentRoutes = require("./routes/studentRoutes");
-const app = express();
+require('dotenv').config();
 const port = process.env.PORT || 5000;
-//bdd 
-require("./config/database"); 
-// Sécurisation des en-têtes
-app.use(helmet());
-// Activer les CORS
-app.use(cors());
-// Gestion des requêtes JSON
+const app = express();
+
 app.use(express.json());
 
-// Routes API
-app.use("/classrooms", classroomRoutes);
-app.use("/classrooms/:classroom_id/students", studentRoutes);
+const classroomRoutes = require('./routes/classrooms');
+const studentRoutes = require('./routes/students');
 
-// Page d'accueil
-app.get("/", (req, res) => {
-    res.json({ message: "Bienvenue sur mon API de gestion de soutenances" });
-});
+app.use('/classrooms', classroomRoutes);
+app.use('/classrooms', studentRoutes); 
 
-// Lancer le serveur
 app.listen(port, () => {
-    console.log(`Serveur en ligne sur le port : ${port}`);
+    console.log("API Au tableau en cours ", port);
 });
