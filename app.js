@@ -5,12 +5,17 @@ const helmet = require('helmet');
 const classroomRoutes = require('./routes/classroomRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const port = process.env.PORT || 5000;
+const cors = require('cors');
 
 const app = express();
 
 // sécuriser les en-têtes HTTP
 app.use(helmet()); 
 
+// Activer CORS
+app.use(cors());
+
+// Requete JSON
 app.use(express.json());
 
 // Middleware simple pour API Key
