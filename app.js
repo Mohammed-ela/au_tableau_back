@@ -9,7 +9,8 @@ const classroomRoutes = require('./routes/classroomRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 
 app.use('/classrooms', classroomRoutes);
-app.use('/classrooms/:classroom_id/students', studentRoutes);
+app.use('/classrooms', studentRoutes);  
+
 
 app.listen(port, () => {
     console.log("API Au tableau en cours sur le port :", port);
