@@ -50,7 +50,7 @@ router.delete("/:id", async (req, res) => {
         }
 
         await db.collection('classrooms').deleteOne({ _id: new ObjectId(classroomId) });
-        res.status(204).end();
+        res.status(200).json({ message: "classe supprimé avec succes" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Erreur serveur" });
