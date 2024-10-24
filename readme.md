@@ -1,102 +1,128 @@
 
-# Au Tableau - Gestion de soutenances pour Webstart
+# Projet API "Au Tableau"
 
-## Description
-
-**Au Tableau** est une application de gestion des soutenances pour les professeurs de Webstart. L'objectif de l'application est de faciliter l'organisation des soutenances en permettant aux enseignants de gérer les classes et les étudiants, et de sélectionner de façon aléatoire les étudiants qui passeront au tableau pour leur soutenance.
-
-### Fonctionnalités principales
-
-- Gérer des classes : créer, modifier et supprimer des classes.
-- Gérer des étudiants dans chaque classe : ajouter, modifier et supprimer des étudiants.
-- Organiser des soutenances : appeler un étudiant de manière aléatoire au tableau pour sa soutenance.
-- Un étudiant ne peut passer au tableau qu'une seule fois par soutenance.
-- Suivi des soutenances : visualiser qui est passé et qui doit encore passer.
-
-### Contraintes
-
-- **Soutenance unique** : Il ne peut y avoir qu'une seule soutenance en cours à la fois.
-- **Gestion locale** : Les soutenances sont gérées uniquement côté client via un mécanisme de stockage local (par exemple, `localStorage`).
-- **Pas de modifications en temps réel** : Impossible d'ajouter des étudiants à une classe pendant qu'une soutenance est en cours.
-- **Unicité des étudiants** : Un étudiant ne peut appartenir qu'à une seule classe et doit être unique dans chaque classe.
-
-## Interface utilisateur
-
-- **Aléatoire** : Un bouton permet de tirer au sort un étudiant pour passer au tableau.
-- **Statistiques (BONUS)** : Gestion des statistiques de passage.
-- **Suivi des étudiants (BONUS)** : Visualisation des étudiants qui sont déjà passés et de ceux qui doivent encore passer.
-- **Gestion manuelle (BONUS)** : Permettre de forcer ou d'annuler le passage d'un étudiant au tableau.
-
-## Technologies utilisées
-
-### Frontend
-
-- **Vanilla JS** : Utilisation de JavaScript pur pour la gestion de l'interface sans librairie ni framework.
-- **CSS Framework** : Au choix pour styliser l'interface utilisateur.
-
-### Backend
-
-- **Express.js** : Gestion des routes et de l'API.
-- **Base de données** : Utilisation de MongoDB, MySQL, PostgreSQL ou SQLite pour la gestion des classes et des étudiants.
-
-## API Endpoints
-
-### Classes (`/classrooms`)
-
-- **GET /classrooms** : Récupérer la liste des classes (HTTP 200)
-- **POST /classrooms** : Créer une nouvelle classe avec un paramètre `name`
-  - HTTP 422 : Paramètre `name` manquant
-  - HTTP 409 : La classe existe déjà
-  - HTTP 201 : Classe créée avec succès
-- **DELETE /classrooms/:id** : Supprimer une classe
-  - HTTP 404 : Classe non trouvée
-  - HTTP 204 : Classe supprimée
-- **PUT/PATCH /classrooms/:id** : Modifier une classe avec un paramètre `name`
-  - HTTP 404 : Classe non trouvée
-  - HTTP 409 : Le nom de classe existe déjà
-  - HTTP 422 : Paramètre `name` manquant
-  - HTTP 200 : Classe modifiée avec succès
-
-### Étudiants (`/students`)
-
-- **GET /classrooms/:classroom_id/students** : Récupérer la liste des étudiants dans une classe (HTTP 200)
-- **POST /classrooms/:classroom_id/students** : Ajouter un étudiant dans une classe avec un paramètre `name`
-  - HTTP 404 : Classe non trouvée
-  - HTTP 422 : Paramètre `name` manquant
-  - HTTP 409 : L'étudiant existe déjà dans la classe
-  - HTTP 201 : Étudiant ajouté avec succès
-- **DELETE /classrooms/:classroom_id/students/:student_id** : Supprimer un étudiant
-  - HTTP 404 : Classe ou étudiant non trouvé
-  - HTTP 204 : Étudiant supprimé
-- **PUT/PATCH /classrooms/:classroom_id/students/:student_id** : Modifier un étudiant avec un paramètre `name`
-  - HTTP 404 : Classe ou étudiant non trouvé
-  - HTTP 409 : L'étudiant existe déjà
-  - HTTP 422 : Paramètre `name` manquant
-  - HTTP 200 : Étudiant modifié avec succès
+Cette API permet de gérer des classes et des étudiants. Elle est sécurisée par un paramètre `key` que vous devez passer dans l'URL pour accéder aux ressources.
 
 ## Installation
 
-### Prérequis
-
-- Node.js et npm
-- Base de données (MongoDB, MySQL, PostgreSQL, SQLite...)
-
-### Étapes
-
-1. Clonez le projet :
+1. **Cloner le projet** :
    ```bash
-   git clone https://github.com/Mohammed-ela/au_tableau.git
+   git clone https://github.com/votre-repo.git
+   cd votre-projet
    ```
-2. Installez les dépendances :
+
+2. **Installer les dépendances** :
    ```bash
    npm install
    ```
-3. Configurez votre base de données dans le fichier de configuration.
-4. Lancez le serveur :
+
+3. **Créer un fichier `.env`** avec les variables suivantes :
+   ```bash
+   MONGODB_USER=votre_utilisateur
+   MONGODB_PASSWORD=votre_mot_de_passe
+   MONGODB_CLUSTER=votre_cluster
+   MONGODB_DATABASE=votre_base_de_donnees
+   PORT=5000
+   API_KEY=your_api_key
+   ```
+
+4. **Démarrer l'application** :
    ```bash
    npm start
    ```
 
-## Auteur
+## Utilisation
 
-Projet développé par **El amrani Mohammed** dans le cadre des travaux pratiques pour Webstart.
+Toutes les requêtes à l'API doivent inclure un paramètre `key` avec une valeur correspondant à la clé API définie dans le fichier `.env`.
+
+### Exemple de clé API dans l'URL
+
+```http
+http://localhost:5000/classrooms?key=your_api_key
+```
+
+### Routes disponibles
+
+#### Classes
+
+- **GET /classrooms**
+  - Description : Récupère la liste de toutes les classes.
+  - Exemple :
+    ```http
+    GET http://localhost:5000/classrooms?key=your_api_key
+    ```
+
+- **POST /classrooms**
+  - Description : Crée une nouvelle classe.
+  - Corps attendu (JSON) :
+    ```json
+    {
+      "name": "Nom de la classe"
+    }
+    ```
+  - Exemple :
+    ```http
+    POST http://localhost:5000/classrooms?key=your_api_key
+    ```
+  
+- **PUT /classrooms/:id**
+  - Description : Modifie une classe existante.
+  - Exemple :
+    ```http
+    PUT http://localhost:5000/classrooms/671a0d6b5cc8885cfd586a9b?key=your_api_key
+    ```
+  - Corps attendu (JSON) :
+    ```json
+    {
+      "name": "Nouveau nom de la classe"
+    }
+    ```
+
+- **DELETE /classrooms/:id**
+  - Description : Supprime une classe existante.
+  - Exemple :
+    ```http
+    DELETE http://localhost:5000/classrooms/671a0d6b5cc8885cfd586a9b?key=your_api_key
+    ```
+
+#### Étudiants
+
+- **GET /classrooms/:classroom_id/students**
+  - Description : Récupère la liste des étudiants d'une classe.
+  - Exemple :
+    ```http
+    GET http://localhost:5000/classrooms/671a0d6b5cc8885cfd586a9b/students?key=your_api_key
+    ```
+
+- **POST /classrooms/:classroom_id/students**
+  - Description : Ajoute un nouvel étudiant à une classe.
+  - Corps attendu (JSON) :
+    ```json
+    {
+      "name": "Nom de l'étudiant"
+    }
+    ```
+  - Exemple :
+    ```http
+    POST http://localhost:5000/classrooms/671a0d6b5cc8885cfd586a9b/students?key=your_api_key
+    ```
+
+- **PUT /classrooms/:classroom_id/students/:student_id**
+  - Description : Modifie un étudiant existant dans une classe.
+  - Exemple :
+    ```http
+    PUT http://localhost:5000/classrooms/671a0d6b5cc8885cfd586a9b/students/7c4f0982bb02c8d3dc3d56a2?key=your_api_key
+    ```
+  - Corps attendu (JSON) :
+    ```json
+    {
+      "name": "Nouveau nom de l'étudiant"
+    }
+    ```
+
+- **DELETE /classrooms/:classroom_id/students/:student_id**
+  - Description : Supprime un étudiant existant d'une classe.
+  - Exemple :
+    ```http
+    DELETE http://localhost:5000/classrooms/671a0d6b5cc8885cfd586a9b/students/7c4f0982bb02c8d3dc3d56a2?key=your_api_key
+    ```

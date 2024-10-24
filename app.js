@@ -13,6 +13,17 @@ app.use(helmet());
 
 app.use(express.json());
 
+// Middleware simple pour API Key
+const apiKeyMiddleware = (req, res, next) => {
+    const apiKey = req.query.key; // on recup la clé depuis les params "key"
+    if (apiKey && apiKey === process.env.API_KEY) {
+        next(); // on next si la clé existe et qu'elle est valide
+    } else {
+        return res.status(403).json({ error: 'Accès interdit :)' });
+    }
+};
+
+
 (async () => {
     try {
         // Connexion en une fois BDD
@@ -25,9 +36,9 @@ app.use(express.json());
         });
 
         // Routes
-        app.use('/classrooms', classroomRoutes);
-        app.use('/classrooms', studentRoutes);  
-
+        app.use('/classrooms', apiKeyMiddleware, classroomRoutes);
+        app.use('/classrooms', apiKeyMiddleware, studentRoutes);
+        
         app.listen(port, () => {
             console.log("API Au tableau en cours sur le port :", port);
         });
