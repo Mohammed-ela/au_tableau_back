@@ -6,6 +6,11 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     try {
         const classrooms = await req.db.collection('classrooms').find().toArray();
+        
+        if (classrooms.length === 0) {
+            return res.status(200).json({ message: "Aucune classe n'est enregistrée.", classrooms: [] });
+        }
+
         res.status(200).json(classrooms);
     } catch (err) {
         console.error("Erreur lors de la récupération des classes :", err);

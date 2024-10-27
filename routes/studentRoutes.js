@@ -11,7 +11,7 @@ router.get("/:classroom_id/students", async (req, res) => {
         const students = await req.db.collection('students').find({ classroom_id: new ObjectId(classroomId) }).toArray();
 
         if (!students || students.length === 0) {
-            return res.status(404).json({ message: "Aucun étudiant trouvé pour cette classe." });
+            return res.status(200).json({ message: "Aucun étudiant trouvé pour cette classe.", students: [] });
         }
 
         res.status(200).json(students);
