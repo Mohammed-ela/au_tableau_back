@@ -32,8 +32,11 @@ router.post("/", async (req, res) => {
             return res.status(409).json({ error: "Le paramètre 'name' existe déjà." });
         }
 
-        await req.db.collection('classrooms').insertOne({ name });
-        res.status(201).json({ message: "Classe créée avec succès." });
+        const result = await req.db.collection('classrooms').insertOne({ name });
+        const newClass = await req.db.collection('classrooms').findOne({ _id: result.insertedId });
+
+        // Retourne l'objet class 
+        res.status(201).json(newClass);
     } catch (err) {
         console.error("Erreur lors de la création de la classe :", err);
         res.status(500).json({ error: "Erreur serveur" });
